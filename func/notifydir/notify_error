@@ -1,0 +1,8 @@
+# vim:ft=zsh
+autoload -Uz notify
+
+if [ $? -ne 0 ]; then
+	notify -t 2000 -i stock_dialog-error " " "${PREEXEC_CMD:-Shell Command} $@"
+	return 1
+fi
+return 0

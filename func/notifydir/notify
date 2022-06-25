@@ -1,0 +1,8 @@
+# vim:ft=zsh
+
+if pkgtools__has_binary notify-send; then
+	if [ "$HOSTNAME" = "garrido-laptop" ]; then
+		notify-send $@ > /dev/null 2>&1
+	fi
+fi
+return 0

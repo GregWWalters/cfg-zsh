@@ -1,0 +1,7 @@
+# vim:ft=zsh
+
+# for notifying of long running commands
+export PREEXEC_CMD=`echo $1 | awk '{ print $1; }'`
+export PREEXEC_TIME=$(gdate -I'ns')
+return 0
+

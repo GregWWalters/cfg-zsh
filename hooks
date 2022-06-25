@@ -1,0 +1,11 @@
+# vim:ft=zsh
+
+autoload -Uz add-zsh-hook start_cmd_timer log_command_time
+
+# Print command start time before executing
+function command_time() {
+	echo "\033[2m[$(date '+%Y-%m-%d %H:%M:%S')]\033[m"
+}
+add-zsh-hook preexec start_cmd_timer
+add-zsh-hook precmd log_command_time
+

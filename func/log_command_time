@@ -1,0 +1,77 @@
+# vim:ft=zsh
+
+if [[ -z "$PREEXEC_TIME" ]]; then
+	echo "\033[2m[$(date -I'minutes')]\033[m"
+else
+	typeset -r end_time=$(gdate -I'ns')
+	typeset -i start_s start_ns end_s end_ns ns
+	start_s=$(gdate --date="$PREEXEC_TIME" '+%s')
+	start_ns=$(gdate --date="$PREEXEC_TIME" '+%N')
+	(( start_ns = start_s * 1e9 + start_ns ))
+	end_s=$(gdate --date="$end_time" '+%s')
+	end_ns=$(gdate --date="$end_time" '+%N')
+	(( end_ns = end_s * 1e9 + end_ns ))
+	let "ns = end_ns - start_ns"
+
+	# Build run time string
+	if [[ $ns -lt 1e9 ]]; then ## if less than 1 second
+		typeset -ir start_s=$(gdate --date="$PREEXEC_TIME" '+%s')
+		typeset -ir now_s=$(gdate --date="$end_time" '+%s')
+		typeset -i sec
+		local run_pretty
+		let "sec = now_s - start_s"
+		typeset -i hrs min
+
+		# calculate ms, µs, ns
+		if [[ $ns -gt 1e6 ]]; then
+			printf -v run_pretty '%.2fms' $(( ns / 1e6 ))
+		elif [[ $ns -gt 1e3 ]]; then
+			printf -v run_pretty '%.2fµs' $(( ns / 1e3 ))
+		else printf -v run_pretty '%uns' $ns
+		fi
+	else # if one second or longer
+		# Calculate run hours, minutes, seconds
+		let "sec = end_s - start_s"
+		if [[ $sec -ge 3600 ]]; then
+			(( hrs = sec / 3600 )); (( sec = sec % 3600 ))
+			run_pretty+="${hrs}h"
+		fi
+		if [[ $sec -ge 60 ]]; then
+			(( min = sec / 60 )); (( sec = sec % 60 ))
+			run_pretty+="${min}m"
+		fi
+		if [[ -z "$sec" ]]; then sec=0; fi
+		run_pretty+="${sec}s"
+	fi
+
+	# Abbreviate dates if the same
+	local start_abrv end_abrv
+	typeset -i s_year=$(gdate --date="$PREEXEC_TIME" '+%Y') \
+		e_year=$(gdate --date="$end_time" '+%Y') \
+		s_month=$(gdate --date="$PREEXEC_TIME" '+%m') \
+		e_month=$(gdate --date="$end_time" '+%m') \
+		s_day=$(gdate --date="$PREEXEC_TIME" '+%d') \
+		e_day=$(gdate --date="$end_time" '+%d')
+
+	if [[ "s_year" -ne "e_year" ]]; then
+		start_abrv+="${s_year}-"; end_abrv+="${e_year}-"
+	fi
+
+	if [[ "s_month" -ne "e_month" ]]; then
+		start_abrv+="${s_month}-"; end_abrv+="${e_month}-"
+	fi
+
+	if [[ "s_day" -ne "e_day" ]]; then
+		start_abrv+="${s_day} "; end_abrv+="${e_day} "
+	fi
+
+	start_abrv+="$(gdate --date=$PREEXEC_TIME '+%R')"
+	end_abrv+="$(gdate --date=$end_time '+%R')"
+	if [[ "$start_abrv" = "$end_abrv" ]]; then
+		echo "\033[2m[${end_abrv} $PREEXEC_CMD ${run_pretty}]\033[m"
+	else
+		echo "\033[2m[${start_abrv} : ${end_abrv} $PREEXEC_CMD ${run_pretty}]\033[m"
+	fi
+	unset run_pretty
+fi
+

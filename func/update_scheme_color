@@ -1,0 +1,5 @@
+# vim:ft=zsh
+
+if (( $+functions[__load_scheme] )); then
+	__load_scheme
+fi

@@ -1,0 +1,9 @@
+# vim:ft=zsh
+autoload -Uz notify
+
+__pkgtools__at_function_enter notify_success
+if [ $? -ne 0 ]; then
+	notify -t 2000 -i stock_dialog-info "Notice" "${PREEXEC_CMD:-Shell Command}"
+fi
+__pkgtools__at_function_exit
+return 0

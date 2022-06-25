@@ -1,0 +1,5 @@
+# vim:ft=zsh
+autoload -Uz notify
+
+notify -t 3000 -i stock_dialog-warning " " "${PREEXEC_CMD:-Shell Command} $@"
+return 0

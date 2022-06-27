@@ -1,6 +1,6 @@
 # vim:ft=zsh
 
-if [[ -z "$PREEXEC_TIME" ]]; then
+if [[ -z "$PREEXEC_TIME" || -z "$PREEXEC_CMD" ]]; then
 	echo "\033[2m[$(date -I'minutes')]\033[m"
 else
 	typeset -r end_time=$(gdate -I'ns')
@@ -72,6 +72,6 @@ else
 	else
 		echo "\033[2m[${start_abrv} : ${end_abrv} $PREEXEC_CMD ${run_pretty}]\033[m"
 	fi
-	unset run_pretty
+	unset run_pretty PREEXEC_TIME PREEXEC_CMD
 fi
 

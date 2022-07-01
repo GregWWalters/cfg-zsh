@@ -1,7 +1,10 @@
 # vim:ft=zsh
 
+typeset -i exit_code=$?
+local style="\033[2m" reset="\033[0m" exit_text
+
 if [[ -z "$PREEXEC_TIME" || -z "$PREEXEC_CMD" ]]; then
-	echo "\033[2m[$(date -I'minutes')]\033[m"
+	echo "${style}[$(date -I'minutes')]${reset}"
 else
 	typeset -r end_time=$(gdate -I'ns')
 	typeset -i start_s start_ns end_s end_ns ns
@@ -12,6 +15,8 @@ else
 	end_ns=$(gdate --date="$end_time" '+%N')
 	(( end_ns = end_s * 1e9 + end_ns ))
 	let "ns = end_ns - start_ns"
+
+	if [ "$PREEXEC_CMD" = '[' ]; then PREEXEC_CMD='test'; fi
 
 	# Build run time string
 	if [[ $ns -lt 1e9 ]]; then ## if less than 1 second
@@ -67,11 +72,17 @@ else
 
 	start_abrv+="$(gdate --date=$PREEXEC_TIME '+%R')"
 	end_abrv+="$(gdate --date=$end_time '+%R')"
-	if [[ "$start_abrv" = "$end_abrv" ]]; then
-		echo "\033[2m[${end_abrv} $PREEXEC_CMD ${run_pretty}]\033[m"
-	else
-		echo "\033[2m[${start_abrv} : ${end_abrv} $PREEXEC_CMD ${run_pretty}]\033[m"
+	if [ $exit_code -ne 0 ]; then
+		style="\033[2;31m";
+		exit_text="($exit_code)"
 	fi
-	unset run_pretty PREEXEC_TIME PREEXEC_CMD
+	if [[ "$start_abrv" = "$end_abrv" ]]; then
+		echo "${style}[${end_abrv} ${PREEXEC_CMD}${exit_text} ${run_pretty}]${reset}"
+	else
+		echo "${style}[${start_abrv} : ${end_abrv} ${PREEXEC_CMD}${exit_text} ${run_pretty}]${reset}"
+	fi
+	unset run_pretty exit_code PREEXEC_TIME PREEXEC_CMD
 fi
+
+return exit_code
 

@@ -1,14 +1,12 @@
 # Set config dir
-if [ -z "$XDG_CONFIG_HOME" ]; then
-	XDG_CONFIG_HOME="${HOME}/.config"
-fi
+XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
 sh_config="${XDG_CONFIG_HOME}/sh"
 zsh_config="${XDG_CONFIG_HOME}/zsh"
 
 # load profile
 # profile loads environment variables, path, aliases, functions, and sets the
 # prompt
-[ -f "$HOME/.profile" ] && source "$HOME/.profile"
+[ -f "${HOME}/.profile" ] && source "${HOME}/.profile"
 
 fpath=( "${zsh_config}/func" "${fpath[@]}" )
 # autoload -U "$fpath[1]/*(.:t) # load all functions in first directory of fpath

@@ -1,12 +1,13 @@
 # Set config dir
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
+XDG_DATA_HOME="${XDG_DATA_HOME:=${HOME}/.local/share}"
 sh_config="${XDG_CONFIG_HOME}/sh"
 zsh_config="${XDG_CONFIG_HOME}/zsh"
 
 # load profile
 # profile loads environment variables, path, aliases, functions, and sets the
 # prompt
-[ -f "${HOME}/.profile" ] && source "${HOME}/.profile"
+[ -s "${sh_config}/profile" ] && source "${sh_config}/profile"
 
 fpath=( "${zsh_config}/func" "${fpath[@]}" )
 # autoload -U "$fpath[1]/*(.:t) # load all functions in first directory of fpath
@@ -15,7 +16,7 @@ fpath=( "${zsh_config}/func" "${fpath[@]}" )
 setopt histignorealldups
 HISTSIZE=1000
 SAVEHIST=1000
-HISTFILE="${HOME}/.zsh/history"
+HISTFILE="${XDG_DATA_HOME}/zsh/history"
 ## search backward through command history
 _history-incremental-search-backward () {
     zle .history-incremental-search-backward $BUFFER
@@ -31,8 +32,9 @@ zstyle ':completion:*' expand prefix suffix
 zle -N history-incremental-search-backward _history-incremental-search-backward
 ## this line is actually not necessary since this is default.
 bindkey '^R' history-incremental-search-backward
-## codefresh cli
-codefresh_config="${HOME}/.config/codefresh"
+
+## Codefresh CLI completion
+codefresh_config="${XDG_CONFIG_HOME}/codefresh"
 if [ -d "$codefresh_config" -a -s "${codefresh_config}/completion.zsh" ]; then
 	source "${codefresh_config}/completion.zsh"
 fi

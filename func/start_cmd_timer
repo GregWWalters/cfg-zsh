@@ -1,7 +1,7 @@
 # vim:ft=zsh
 
 # for calculating run time of commands
-PREEXEC_CMD=$(echo $1 | head -n 1 | cut -w -f 1)
+PREEXEC_CMD=$(echo $1 | head -n 1 | cut -d ' ' -f 1)
 if [ "$PREEXEC_CMD" != "${PREEXEC_CMD#*=}" ]; then
 	PREEXEC_CMD="assign ${PREEXEC_CMD%%=*}"
 fi

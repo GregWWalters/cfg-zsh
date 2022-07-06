@@ -62,13 +62,11 @@ else
 		start_abrv+="${s_year}-"; end_abrv+="${e_year}-"
 	fi
 
-	if [[ "s_month" -ne "e_month" ]]; then
-		start_abrv+="${s_month}-"; end_abrv+="${e_month}-"
+	if [[ "s_month" -ne "e_month" ]] || [[ "s_day" -ne "e_day" ]]; then
+		start_abrv+="${s_month}-${s_day} "; end_abrv+="${e_month}-${e_day} "
 	fi
 
-	if [[ "s_day" -ne "e_day" ]]; then
-		start_abrv+="${s_day} "; end_abrv+="${e_day} "
-	fi
+	if [[ "$start_abrv" = "$end_abrv" ]]; then start_abrv='' end_abrv=''; fi
 
 	start_abrv+="$(gdate --date=$PREEXEC_TIME '+%R')"
 	end_abrv+="$(gdate --date=$end_time '+%R')"

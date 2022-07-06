@@ -1,7 +1,13 @@
 # vim:ft=zsh
 
-# for notifying of long running commands
-export PREEXEC_CMD=`echo $1 | awk '{ print $1; }'`
-export PREEXEC_TIME=$(gdate -I'ns')
+# for calculating run time of commands
+PREEXEC_CMD=$(echo $1 | head -n 1 | cut -w -f 1)
+if [ "$PREEXEC_CMD" != "${PREEXEC_CMD#*=}" ]; then
+	PREEXEC_CMD="assign ${PREEXEC_CMD%%=*}"
+fi
+
+PREEXEC_TIME=$(gdate -I'ns')
+
+export PREEXEC_CMD PREEXEC_TIME
 return 0
 

@@ -1,15 +1,16 @@
 # Set config dir
 XDG_CONFIG_HOME="${XDG_CONFIG_HOME:=${HOME}/.config}"
 XDG_DATA_HOME="${XDG_DATA_HOME:=${HOME}/.local/share}"
-sh_config="${XDG_CONFIG_HOME}/sh"
-zsh_config="${XDG_CONFIG_HOME}/zsh"
+SH_CFG_DIR="${SH_CFG_RC:=${XDG_CONFIG_HOME}/sh}"
+export ZSH_CFG_DIR="${XDG_CONFIG_HOME}/zsh"
 
-# load profile
+# load profile, if it hasn't already been loaded
 # profile loads environment variables, path, aliases, functions, and sets the
 # prompt
-[ -s "${sh_config}/profile" ] && source "${sh_config}/profile"
+[ -s "${SH_CFG_DIR}/profile" ] && [ -z "$PROFILE_LOADED" ] && \
+	source "${SH_CFG_DIR}/profile"
 
-fpath=( "${zsh_config}/func" "${fpath[@]}" )
+fpath=( "${ZSH_CFG_DIR}/func" "${fpath[@]}" )
 # autoload -U "$fpath[1]/*(.:t) # load all functions in first directory of fpath
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh/history:
@@ -61,7 +62,7 @@ fi
 [ -f /Users/greg/.npm/_npx/14940/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash ] && . /Users/greg/.npm/_npx/14940/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.bash
 
 # Hook Functions
-[ -f "${zsh_config}/hooks" ] && source "${zsh_config}/hooks"
+[ -f "${ZSH_CFG_DIR}/hooks" ] && source "${ZSH_CFG_DIR}/hooks"
 
 # Splash Screen
 # Display ASCII art when loading .bashrc

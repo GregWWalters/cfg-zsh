@@ -1,16 +1,10 @@
 #! /bin/zsh
 # vim:ft=zsh
 
-# Git
-source "${HOME}/.config/git/git-prompt.sh"
-GIT_PS1_SHOWUPSTREAM="auto"
 autoload -Uz vcs_info
 precmd_vcs_info() { vcs_info }
 precmd_functions+=( precmd_vcs_info )
 setopt prompt_subst
-GIT_PS1_SHOWDIRTYSTATE=1
-GIT_PS1_SHOWUPSTREAM="auto"
-GIT_PS1_SHOWSTASHSTATE=1
 PROMPT='%B%F{blue}%3~%f%b %_%# '
 RPROMPT=\$vcs_info_msg_0_
 zstyle ':vcs_info:git:*' formats '%F{green}(%b) %r/%S%f'

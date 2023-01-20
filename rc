@@ -4,6 +4,10 @@ XDG_DATA_HOME="${XDG_DATA_HOME:=${HOME}/.local/share}"
 ZSH_CFG_DIR="${ZSH_CFG_DIR:=${XDG_CONFIG_HOME}/zsh}"
 SH_CFG_DIR="${SH_CFG_DIR:=${XDG_CONFIG_HOME}/sh}"
 
+# load profile, if it hasn't already been loaded
+# profile loads environment variables, path, aliases, and functions
+[ -s "${SH_CFG_DIR}/profile" ] && source "${SH_CFG_DIR}/profile"
+
 # set prompt
 [ -s "$ZSH_CFG_DIR/prompt" ] && source "$ZSH_CFG_DIR/prompt"
 
@@ -43,6 +47,9 @@ if [ -z ${NVM_DIR+x} ]; then
 	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 fi
 
+# Fuzzy Find autocompletion and keybindings
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh ] && source "${XDG_CONFIG_HOME:-$HOME/.config}"/fzf/fzf.zsh
+
 # tabtab source for serverless package
 # uninstall by removing these lines or running `tabtab uninstall serverless`
 [ -f /Users/greg/.npm/_npx/14940/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash ] && source /Users/greg/.npm/_npx/14940/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.bash
@@ -57,4 +64,3 @@ fi
 [ -f "${ZSH_CFG_DIR}/hooks" ] && source "${ZSH_CFG_DIR}/hooks"
 
 # vim:ft=zsh
-

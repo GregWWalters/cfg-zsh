@@ -3,7 +3,12 @@
 typeset -i exit_code=$?
 local style="\033[2m" reset="\033[0m" exit_text
 
-if [[ -z "$PREEXEC_TIME" || -z "$PREEXEC_CMD" ]]; then
+# Some long-running commands, such as those that run a session like `tmux',
+# make no sense to print the run duration of. Include
+local exclude_cmd=("tmux" "screen")
+
+if [[ -z "$PREEXEC_TIME" || -z "$PREEXEC_CMD" ]] \
+	|| (($exclude_cmd[(Ie)$PREEXEC_CMD])); then
 	echo "${style}[$(date -I'minutes')]${reset}"
 else
 	typeset -r end_time=$(gdate -I'ns')

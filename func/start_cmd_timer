@@ -6,7 +6,10 @@ if [ "$PREEXEC_CMD" != "${PREEXEC_CMD#*=}" ]; then
 	PREEXEC_CMD="assign ${PREEXEC_CMD%%=*}"
 fi
 
-PREEXEC_TIME=$(gdate -I'ns')
+dateBin=date
+if which gdate &>/dev/null; then dateBin=gdate; fi
+
+PREEXEC_TIME=$($dateBin -I'ns')
 
 export PREEXEC_CMD PREEXEC_TIME
 return 0

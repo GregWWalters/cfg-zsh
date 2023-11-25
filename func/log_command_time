@@ -7,17 +7,20 @@ local style="\033[2m" reset="\033[0m" exit_text
 # make no sense to print the run duration of. Include
 local exclude_cmd=("tmux" "screen")
 
+dateBin=date
+if which gdate &>/dev/null; then dateBin=gdate; fi
+
 if [[ -z "$PREEXEC_TIME" || -z "$PREEXEC_CMD" ]] \
 	|| (($exclude_cmd[(Ie)$PREEXEC_CMD])); then
 	echo "${style}[$(date -I'minutes')]${reset}"
 else
-	typeset -r end_time=$(gdate -I'ns')
+	typeset -r end_time=$($dateBin -I'ns')
 	typeset -i start_s start_ns end_s end_ns ns
-	start_s=$(gdate --date="$PREEXEC_TIME" '+%s')
-	start_ns=$(gdate --date="$PREEXEC_TIME" '+%N')
+	start_s=$($dateBin --date="$PREEXEC_TIME" '+%s')
+	start_ns=$($dateBin --date="$PREEXEC_TIME" '+%N')
 	(( start_ns = start_s * 1e9 + start_ns ))
-	end_s=$(gdate --date="$end_time" '+%s')
-	end_ns=$(gdate --date="$end_time" '+%N')
+	end_s=$($dateBin --date="$end_time" '+%s')
+	end_ns=$($dateBin --date="$end_time" '+%N')
 	(( end_ns = end_s * 1e9 + end_ns ))
 	let "ns = end_ns - start_ns"
 
@@ -25,8 +28,8 @@ else
 
 	# Build run time string
 	if [[ $ns -lt 1e9 ]]; then ## if less than 1 second
-		typeset -ir start_s=$(gdate --date="$PREEXEC_TIME" '+%s')
-		typeset -ir now_s=$(gdate --date="$end_time" '+%s')
+		typeset -ir start_s=$($dateBin --date="$PREEXEC_TIME" '+%s')
+		typeset -ir now_s=$($dateBin --date="$end_time" '+%s')
 		typeset -i sec
 		local run_pretty
 		let "sec = now_s - start_s"
@@ -56,12 +59,12 @@ else
 
 	# Abbreviate dates if the same
 	local start_abrv end_abrv
-	typeset -i s_year=$(gdate --date="$PREEXEC_TIME" '+%Y') \
-		e_year=$(gdate --date="$end_time" '+%Y') \
-		s_month=$(gdate --date="$PREEXEC_TIME" '+%m') \
-		e_month=$(gdate --date="$end_time" '+%m') \
-		s_day=$(gdate --date="$PREEXEC_TIME" '+%d') \
-		e_day=$(gdate --date="$end_time" '+%d')
+	typeset -i s_year=$($dateBin --date="$PREEXEC_TIME" '+%Y') \
+		e_year=$($dateBin --date="$end_time" '+%Y') \
+		s_month=$($dateBin --date="$PREEXEC_TIME" '+%m') \
+		e_month=$($dateBin --date="$end_time" '+%m') \
+		s_day=$($dateBin --date="$PREEXEC_TIME" '+%d') \
+		e_day=$($dateBin --date="$end_time" '+%d')
 
 	if [[ "s_year" -ne "e_year" ]]; then
 		start_abrv+="${s_year}-"; end_abrv+="${e_year}-"
@@ -73,8 +76,8 @@ else
 
 	if [[ "$start_abrv" = "$end_abrv" ]]; then start_abrv='' end_abrv=''; fi
 
-	start_abrv+="$(gdate --date=$PREEXEC_TIME '+%R')"
-	end_abrv+="$(gdate --date=$end_time '+%R')"
+	start_abrv+="$($dateBin --date=$PREEXEC_TIME '+%R')"
+	end_abrv+="$($dateBin --date=$end_time '+%R')"
 	if [ $exit_code -ne 0 ]; then
 		style="\033[2;31m";
 		exit_text="($exit_code)"
